@@ -1,8 +1,68 @@
-const validator = require('validator');
+const chalk = require('chalk');
+const notes = require('./notes');
+const yargs = require('yargs');
 
-const getNotes = require('./notes');
+yargs.version('1.1.0');
 
-const msg = getNotes();
-console.log(msg);
-console.log(validator.isEmail('ram@ra.co'));
-console.log(validator.isURL('sdfl.com'))
+
+//Yargs Add command
+yargs.command({       
+    command: 'add',
+    describe: 'Add  a new notes',
+    builder: {
+        title:{
+            describe: "Note title",
+            demandOption: true,
+            type: 'string'
+        },
+        body: {
+            describe: "Note Body",
+            demandOption: true,
+            type: 'string',
+        }
+    },
+    handler(argv){
+        notes.add(argv.title, argv.body);
+    }
+})
+
+//Yargs Remove command
+yargs.command({
+    command: 'remove',
+    describe: 'Remove a command',
+    builder: {
+        title: {
+            describe: 'Notes title',
+            demandOption: true,
+            type: 'string'
+        }
+    },
+    handler(argv){
+        notes.remove(argv.title);
+    }
+})
+
+yargs.command({
+    command: 'list',
+    describe: 'List all the notes',
+    handler(){
+        notes.list();
+    }
+})
+
+yargs.command({
+    command: 'read',
+    describe: 'Read all the notes',
+    builder:{
+        title:{
+            describe: 'Note Title',
+            demandOption: true,
+            type: 'string'
+        }
+    },
+    handler(argv){
+        notes.read(argv.title)
+    }
+})
+
+yargs.parse();
